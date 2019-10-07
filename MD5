@@ -1,0 +1,14 @@
+707fa2fd517d73b74188aeee9fd87368 *DESCRIPTION
+bd6c92ab104af6798d37f70432bcc52b *NAMESPACE
+10000f9773ee4cba640344b1ac9e64d7 *R/clustal.R
+55057eee3925622fda9d01b181eb0c2b *R/color_else.R
+e45005e8b60d2f5269789e614d4e9bc7 *R/geom_msa.R
+e1d1b6da02480da851484941755c2a55 *R/ggmsa.R
+c2f7f18768c041e38b6b7c53a044f3d7 *R/msa_data.R
+029058428aa1e142f5325b0acd82cf0e *R/sysdata.rda
+b7d29a9b0ba63f0cafc1c7902ea6a75b *inst/extdata/dna_seq.fasta
+4d4900e66d223093ed5d8fcbd408ddf8 *inst/extdata/sample.fasta
+6d08169a2c36f88670d23dd7099ce113 *man/color_Clustal.Rd
+3bb7cbdd23f2a884eca94168c28b18ae *man/geom_msa.Rd
+c07cc34d7011b187bece41930f27786f *man/ggmsa.Rd
+c93a0821b000a710f9862241b8b784e9 *man/msa_data.Rd
