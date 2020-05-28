@@ -8,7 +8,7 @@
 ##' @importFrom Biostrings RNAStringSet
 ##' @importFrom Biostrings AAStringSet
 ## @export
-##' @author Lang Zhou
+##' @author Lang Zhou and Guangchuang Yu
 ##' @noRd
 prepare_msa <- function(msa) {
     if (methods::missingArg(msa)) {
@@ -24,7 +24,7 @@ prepare_msa <- function(msa) {
                   AAbin = AAbin2AAStringSet(msa),
                   DNAMultipleAlignment = DNAStringSet(msa),
                   RNAMultipleAlignment = RNAStringSet(msa),
-                  ANAMultipleAlignment = AAStringSet(msa),
+                  AAMultipleAlignment = AAStringSet(msa),
                   msa ## DNAstringSet, RNAStringSet, AAString, BStringSet
                   )
     return(res)

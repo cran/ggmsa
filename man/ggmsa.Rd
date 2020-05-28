@@ -8,21 +8,35 @@ ggmsa(
   msa,
   start = NULL,
   end = NULL,
-  font = "helvetica_regular",
-  color = "Clustal"
+  font = "helvetical",
+  color = "Clustal",
+  char_width = 0.9,
+  none_bg = FALSE,
+  posHighligthed = NULL,
+  seq_name = NULL
 )
 }
 \arguments{
 \item{msa}{Multiple aligned sequence file or object for
 representing either nucleotide sequences or peptide sequences.}
 
-\item{start}{Start position to plot, If font=NULL, only the background frame is drawn, and no character.}
+\item{start}{a numeric.Start position to plot.}
 
-\item{end}{End position to plot,If font=NULL, only the background frame is drawn, and no character.}
+\item{end}{a numeric. End position to plot.}
 
-\item{font}{Character font, Defaults is 'helvetica_regular'.}
+\item{font}{font families, possible values are 'helvetical', 'mono', and 'DroidSansMono', 'TimesNewRoman'.  Defaults is 'helvetical'. If font = NULL, only plot the background tile}
 
 \item{color}{A Color scheme. One of 'Clustal', 'Chemistry_AA', 'Shapely_AA', 'Zappo_AA', 'Taylor_AA', 'Chemistry_NT', 'Shapely_NT', 'Zappo_NT', 'Taylor_NT'. Defaults is 'Clustal'.}
+
+\item{char_width}{characters width. Defaults is 0.9.}
+
+\item{none_bg}{a logical value indicating whether backgroud should be produced. Defaults is FALSE.}
+
+\item{posHighligthed}{A numeric vector of the position that need to be highlighted.}
+
+\item{seq_name}{a logical value indicating whether seqence names should be displayed.
+Defaults is 'NULL' which indicates that the sequence name is displayed when 'font = null', but 'font = char' will not be displayed.
+If 'seq_name = TRUE' the sequence name will be displayed in any case. If 'seq_name = FALSE' the sequence name will not be displayed under any circumstances.}
 }
 \value{
 ggplot object
@@ -31,10 +45,22 @@ ggplot object
 Plot multiple sequence alignment using ggplot2 with multiple color schemes supported.
 }
 \examples{
-#plot multiple sequence alignment
-f <- system.file("extdata/sample.fasta", package="ggmsa")
-ggmsa(f, 164, 213, color="Chemistry_AA")
+#plot multiple sequences by loading fasta format 
+fasta <- system.file("extdata", "sample.fasta", package = "ggmsa")
+ggmsa(fasta, 164, 213, color="Chemistry_AA")
+
+#XMultipleAlignment objects can be used as input in the 'ggmsa'
+AAMultipleAlignment <- Biostrings::readAAMultipleAlignment(fasta)
+ggmsa(AAMultipleAlignment, 164, 213, color="Chemistry_AA")
+
+#XStringSet objects can be used as input in the 'ggmsa'
+AAStringSet <- Biostrings::readAAStringSet(fasta)
+ggmsa(AAStringSet, 164, 213, color="Chemistry_AA")
+
+#Xbin objects from 'seqmagick' can be used as input in the 'ggmsa'
+AAbin <- seqmagick::fa_read(fasta)
+ggmsa(AAbin, 164, 213, color="Chemistry_AA")
 }
 \author{
-guangchuang yu
+Guangchuang Yu
 }

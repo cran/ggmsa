@@ -14,61 +14,72 @@ Biocpkg <- function(pkg) {
     sprintf("[%s](http://bioconductor.org/packages/%s)", pkg, pkg)
 }
 
-## ----echo=FALSE, results='hide', message=FALSE--------------------------------
 library(ggmsa)
+library(ggplot2)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  ## installing the package
 #  install.packages("ggmsa")
-#  ## ## loading the package
+#  ## loading the package
 #  library("ggmsa")
 
 ## ----warning=FALSE------------------------------------------------------------
-sequences <- system.file("extdata", "sample.fasta", package = "ggmsa")
-print(sequences)
+ available_msa()
+
+ protein_sequences <- system.file("extdata", "sample.fasta", package = "ggmsa")
+ miRNA_sequences <- system.file("extdata", "seedSample.fa", package = "ggmsa")
+ nt_sequences <- system.file("extdata", "LeaderRepeat_All.fa", package = "ggmsa")
+ 
 
 ## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(sequences, 320, 360, color = "Clustal")
+ggmsa(protein_sequences, start = 265, end = 300)
 
-## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(sequences, 320, 360, color = "Chemistry_AA")
+## ----warning=FALSE------------------------------------------------------------
+ available_colors()
 
-## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(sequences, 320, 360, color = "Shapely_AA")
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, color = "Clustal")
 
-## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(sequences, 320, 360, color = "Taylor_AA")
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, color = "Chemistry_AA")
 
-## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(sequences, 320, 360, color = "Zappo_AA")
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, color = "Shapely_AA")
 
-## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(sequences, 320, 360, font = NULL, color = "Chemistry_AA")
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, color = "Taylor_AA")
 
-## ----fig.height=2, fig.width=10, message=FALSE, warning=FALSE-----------------
-library(Biostrings)
-x <- readAAStringSet(sequences)
-d <- as.dist(stringDist(x, method = "hamming")/width(x)[1])
-library(ape)
-tree <- bionj(d)
-library(ggtree)
-p <- ggtree(tree ) + geom_tiplab()
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, color = "Zappo_AA")
 
-data = tidy_msa(x, 164, 213)
-p + geom_facet(geom = geom_msa, data = data,  panel = 'msa',
-               font = NULL, color = "Chemistry_AA") +
-    xlim_tree(1)
+## ----warning=FALSE------------------------------------------------------------
+ available_fonts()
 
-## ----fig.height=6, fig.width=13, message=FALSE, warning=FALSE-----------------
-f <- system.file("extdata", "LeaderRepeat_All.fa", package = "ggmsa")
-s <- readDNAStringSet(f)
-strings <- as.character(s)
-p1 <- ggmsa(s, font = NULL, color = 'Chemistry_NT')
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, font = "helvetical", color = "Chemistry_AA")
 
-library(ggseqlogo)
-library(cowplot)
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, font = "TimesNewRoman", color = "Chemistry_AA")
 
-p2 <- axis_canvas(p1, axis='x')+ geom_logo(strings, 'probability') 
-pp <- insert_xaxis_grob(p1, p2, position="top", grid::unit(.05, "null"))
-ggdraw(pp)
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, font = "DroidSansMono", color = "Chemistry_AA")
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, font = NULL, color = "Chemistry_AA")
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, char_width = 0.5, color = "Chemistry_AA")
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, none_bg = TRUE) + theme_void()
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, 164, 213, color = "Chemistry_AA", 
+      posHighligthed = c(185, 190))
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, 164, 213, color = "Chemistry_AA", seq_name = TRUE)
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, 164, 213, font = NULL, color = "Chemistry_AA", seq_name = FALSE)
 
