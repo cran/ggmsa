@@ -23,6 +23,11 @@ library(ggplot2)
 #  ## loading the package
 #  library("ggmsa")
 
+## ----eval=FALSE---------------------------------------------------------------
+#  if (!requireNamespace("devtools", quietly=TRUE))
+#      install.packages("devtools")
+#  devtools::install_github("YuLab-SMU/ggmsa")
+
 ## ----warning=FALSE------------------------------------------------------------
  available_msa()
 
@@ -36,6 +41,12 @@ ggmsa(protein_sequences, start = 265, end = 300)
 
 ## ----warning=FALSE------------------------------------------------------------
  available_colors()
+
+## ----echo=FALSE, out.width = '70%'--------------------------------------------
+knitr::include_graphics("man/figures/NT_color.png")
+
+## ----echo=FALSE, out.width = '90%'--------------------------------------------
+knitr::include_graphics("man/figures/AA_color.png")
 
 ## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
 ggmsa(protein_sequences, start = 320, end = 360, color = "Clustal")
@@ -51,6 +62,9 @@ ggmsa(protein_sequences, start = 320, end = 360, color = "Taylor_AA")
 
 ## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
 ggmsa(protein_sequences, start = 320, end = 360, color = "Zappo_AA")
+
+## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
+ggmsa(protein_sequences, start = 320, end = 360, color = "LETTER")
 
 ## ----warning=FALSE------------------------------------------------------------
  available_fonts()
