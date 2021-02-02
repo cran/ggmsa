@@ -1,6 +1,6 @@
 Package: ggmsa
 Title: Plot Multiple Sequence Alignment using 'ggplot2'
-Version: 0.0.5
+Version: 0.0.6
 Authors@R: c( person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
               person("Lang", "Zhou",      email = "nyzhoulang@gmail.com",    role = "aut"),
               person("Huina", "Huang",    email = "1185796994@qq.com",       role = "ctb"))
@@ -16,10 +16,10 @@ LazyData: true
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2021-01-06 00:17:45 UTC; ygc
+Packaged: 2021-02-02 09:12:02 UTC; ygc
 Author: Guangchuang Yu [aut, cre] (<https://orcid.org/0000-0002-6485-8781>),
   Lang Zhou [aut],
   Huina Huang [ctb]
 Maintainer: Guangchuang Yu <guangchuangyu@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-01-06 15:50:11 UTC
+Date/Publication: 2021-02-02 10:10:07 UTC

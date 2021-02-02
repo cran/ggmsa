@@ -3,14 +3,15 @@
 ggplot_add.seqlogo <- function(object, plot, object_name) {
     msaData <- plot$layers[[1]]$data
     logo_tidyData <- msa2tidy(msaData)
+    logo_font <- object$font
+    logo_color <- object[["color"]]
+    adaptive <- object$adaptive
+    top <- object$top
+    logo_custom_color <- object[["custom_color"]]
 
-     logo_font <- object$font
-     logo_color <- object$color
-     adaptive <- object$adaptive
-     top <- object$top
-
-     ly_logo <- geom_logo(data  = logo_tidyData, font = logo_font, color = logo_color, adaptive = adaptive, top = top)
-     ggplot_add(ly_logo, plot, object_name)
+    ly_logo <- geom_logo(data  = logo_tidyData, font = logo_font, color = logo_color,
+                         adaptive = adaptive, top = top, custom_color = logo_custom_color)
+    ggplot_add(ly_logo, plot, object_name)
 }
 
 ##' @method ggplot_add seed
@@ -75,7 +76,10 @@ ggplot_add.facet_msa <- function(object, plot, object_name){
     #   geom_text(aes_(x = ~position, y = ~-1, label = ~x_text), data = facetData, na.rm = T, color = "#6d6d6d", size = 3.2) +
     #   facet_wrap(~facetData$facet, ncol = 1) + scale_x_continuous(breaks = NULL)
     #ggplot_add(msa_facet, plot, object_name)
-    plot + facet_wrap(~facetData$facet, ncol = 1, scales = "free") + coord_cartesian()#+ scale_x_continuous(breaks = NULL)
+    xl_scale <- facet_scale(facetData, field)
+    plot + facet_wrap(~facetData$facet, ncol = 1, scales = "free") +
+        scale_x_continuous(expand = c(0,0), breaks = xl_scale, labels = xl_scale) +
+            coord_cartesian()
 
 }
 

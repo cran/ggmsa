@@ -9,6 +9,8 @@ geom_msa(
   font = "helvetical",
   mapping = NULL,
   color = "Chemistry_AA",
+  custom_color = NULL,
+  order = NULL,
   char_width = 0.9,
   none_bg = FALSE,
   by_conservation = FALSE,
@@ -20,6 +22,7 @@ geom_msa(
   disagreement = TRUE,
   ignore_gaps = FALSE,
   ref = NULL,
+  position = "identity",
   ...
 )
 }
@@ -32,6 +35,10 @@ geom_msa(
 If font = NULL, only plot the background tile.}
 
 \item{color}{A Color scheme. One of 'Clustal', 'Chemistry_AA', 'Shapely_AA', 'Zappo_AA', 'Taylor_AA', 'LETTER','CN6',, 'Chemistry_NT', 'Shapely_NT', 'Zappo_NT', 'Taylor_NT'. Defaults is 'Chemistry_AA'.}
+
+\item{custom_color}{A data frame with two cloumn called "names" and "color".Customize the color scheme.}
+
+\item{order}{vectors.Specified sequences order.}
 
 \item{char_width}{a numeric vector. Specifying the character width in the range of 0 to 1. Defaults is 0.9.}
 
@@ -54,6 +61,9 @@ If font = NULL, only plot the background tile.}
 \item{ignore_gaps}{a logical value. When selected TRUE, gaps in column are treated as if that row didn't exist.}
 
 \item{ref}{a character string. Specifying the reference sequence which should be one of input sequences when 'consensus_views' is TRUE.}
+
+\item{position}{Position adjustment, either as a string, or the result of a call to a position adjustment function,
+default is 'identity' meaning 'position_identity()'.}
 
 \item{...}{additional parameter}
 }
