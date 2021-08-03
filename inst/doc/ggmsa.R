@@ -17,16 +17,11 @@ Biocpkg <- function(pkg) {
 library(ggmsa)
 library(ggplot2)
 
-## ----eval=FALSE---------------------------------------------------------------
-#  ## installing the package
-#  install.packages("ggmsa")
-#  ## loading the package
-#  library("ggmsa")
+## -----------------------------------------------------------------------------
+library("ggmsa")
 
-## ----eval=FALSE---------------------------------------------------------------
-#  if (!requireNamespace("devtools", quietly=TRUE))
-#      install.packages("devtools")
-#  devtools::install_github("YuLab-SMU/ggmsa")
+## ----echo=FALSE, out.width='50%'----------------------------------------------
+knitr::include_graphics("man/figures/workflow.png")
 
 ## ----warning=FALSE------------------------------------------------------------
  available_msa()
@@ -37,63 +32,108 @@ library(ggplot2)
  
 
 ## ----fig.height = 2, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 265, end = 300)
+ggmsa(protein_sequences, 300, 350, color = "Clustal", font = "DroidSansMono", char_width = 0.5, seq_name = T )
 
 ## ----warning=FALSE------------------------------------------------------------
- available_colors()
+available_colors()
 
-## ----echo=FALSE, out.width = '70%'--------------------------------------------
-knitr::include_graphics("man/figures/NT_color.png")
-
-## ----echo=FALSE, out.width = '90%'--------------------------------------------
-knitr::include_graphics("man/figures/AA_color.png")
-
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, color = "Clustal")
-
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, color = "Chemistry_AA")
-
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, color = "Shapely_AA")
-
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, color = "Taylor_AA")
-
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, color = "Zappo_AA")
-
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, color = "LETTER")
+## ----echo=FALSE, out.width = '50%'--------------------------------------------
+knitr::include_graphics("man/figures/schemes.png")
 
 ## ----warning=FALSE------------------------------------------------------------
- available_fonts()
+available_fonts()
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, font = "helvetical", color = "Chemistry_AA")
+## ----fig.height = 2.5, fig.width = 11, warning = FALSE, message = FALSE-------
+ggmsa(protein_sequences, 221, 280, seq_name = TRUE, char_width = 0.5) + geom_seqlogo(color = "Chemistry_AA") + geom_msaBar()
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, font = "TimesNewRoman", color = "Chemistry_AA")
+## ----echo=FALSE, results='asis', warning=FALSE, message=FALSE-----------------
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, font = "DroidSansMono", color = "Chemistry_AA")
+x <- "geom_seqlogo()\tgeometric layer\tautomatically generated sequence logos for a MSA\n
+geom_GC()\tannotation module\tshows GC content with bubble chart\n
+geom_seed()\tannotation module\thighlights seed region on miRNA sequences\n
+geom_msaBar()\tannotation module\tshows sequences conservation by a bar chart\n
+geom_helix()\tannotation module\tdepicts RNA secondary structure as arc diagrams(need extra data)\n
+ "
+require(dplyr)
+xx <- strsplit(x, "\n\n")[[1]]
+y <- strsplit(xx, "\t") %>% do.call("rbind", .)
+y <- as.data.frame(y, stringsAsFactors = F)
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, font = NULL, color = "Chemistry_AA")
+colnames(y) <- c("Annotation modules", "Type", "Description")
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, char_width = 0.5, color = "Chemistry_AA")
+require(kableExtra)
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, start = 320, end = 360, none_bg = TRUE) + theme_void()
+knitr::kable(y, align = "l", booktabs = T, escape = T) %>% 
+    kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
+  
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, 164, 213, color = "Chemistry_AA", 
-      posHighligthed = c(185, 190))
+## ----fig.height=2, fig.width=10, message=FALSE, warning=FALSE-----------------
+library(Biostrings)
+x <- readAAStringSet(protein_sequences)
+d <- as.dist(stringDist(x, method = "hamming")/width(x)[1])
+library(ape)
+tree <- bionj(d)
+library(ggtree)
+p <- ggtree(tree) + geom_tiplab()
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, 164, 213, color = "Chemistry_AA", seq_name = TRUE)
+data = tidy_msa(x, 164, 213)
+p + geom_facet(geom = geom_msa, data = data,  panel = 'msa',
+               font = NULL, color = "Chemistry_AA") +
+    xlim_tree(1)
 
-## ----fig.height = 3, fig.width = 10, warning=FALSE----------------------------
-ggmsa(protein_sequences, 164, 213, font = NULL, color = "Chemistry_AA", seq_name = FALSE)
+## ----fig.height=4, fig.width=14, message=FALSE, warning=FALSE-----------------
+#import data
+tp53_sequences <-  system.file("extdata", "tp53.fa", package = "ggmsa")
+tp53_genes <- system.file("extdata", "TP53_genes.xlsx", package = "ggmsa")
+
+#tree
+tp53 <- readAAStringSet(tp53_sequences)
+d <- as.dist(stringDist(tp53, method = "hamming")/width(tp53)[1])
+tree <- bionj(d)
+p_tp53 <- ggtree(tree, branch.length = 'none') + geom_tiplab()
+#msa
+data_53 <- tidy_msa(tp53)
+
+#gene maps
+TP53_arrow <- readxl::read_xlsx(tp53_genes)
+TP53_arrow$direction <- 1
+TP53_arrow[TP53_arrow$strand == "reverse","direction"] <- -1
+
+#color
+library(RColorBrewer)
+mapping = aes(xmin = start, xmax = end, fill = gene, forward = direction)
+my_pal <- colorRampPalette(rev(brewer.pal(n = 10, name = "Set3")))
+
+#tree + gene maps + msa
+library(ggnewscale)
+p_tp53 + geom_facet(geom = geom_msa, data = data_53,
+                     panel = 'msa', font = NULL,
+                     border = NA) + xlim_tree(3.5) + 
+          new_scale_fill() +
+          scale_fill_manual(values = my_pal(10)) +
+          geom_facet(geom = geom_motif,
+                     mapping = mapping, data = TP53_arrow,
+                     panel = 'genes',  on = 'TP53',
+                     arrowhead_height = unit(3, "mm"),
+                     arrowhead_width = unit(1, "mm"))
+
+## ----fig.height = 5, fig.width = 10, message=FALSE, warning=FALSE-------------
+ # 4 fields
+ ggmsa(protein_sequences, start = 0, end = 400, font = NULL, color = "Chemistry_AA") + facet_msa(field = 100)
+
+## ----fig.height=5, fig.width =5, message = FALSE, warning= FALSE--------------
+library(ggtree)
+library(ggtreeExtra)
+sequences <- system.file("extdata", "sequence-link-tree.fasta", package = "ggmsa")
+
+x <- readAAStringSet(sequences)
+d <- as.dist(stringDist(x, method = "hamming")/width(x)[1])
+tree <- bionj(d)
+data <- tidy_msa(x, 120, 200)
+
+p1 <- ggtree(tree, layout = 'circular') + 
+    geom_tiplab(align = TRUE, offset = 0.545, size = 2) + 
+        xlim(NA, 1.3)
+p1 + geom_fruit(data = data, geom = geom_msa, offset = 0, 
+                pwidth = 1.2, font = NULL, border = NA)
 

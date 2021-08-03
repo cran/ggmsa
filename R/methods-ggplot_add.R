@@ -8,9 +8,10 @@ ggplot_add.seqlogo <- function(object, plot, object_name) {
     adaptive <- object$adaptive
     top <- object$top
     logo_custom_color <- object[["custom_color"]]
+    show.legend <- object$show.legend
 
     ly_logo <- geom_logo(data  = logo_tidyData, font = logo_font, color = logo_color,
-                         adaptive = adaptive, top = top, custom_color = logo_custom_color)
+                         adaptive = adaptive, top = top, custom_color = logo_custom_color, show.legend = show.legend)
     ggplot_add(ly_logo, plot, object_name)
 }
 
@@ -33,9 +34,10 @@ ggplot_add.seed <- function(object, plot, object_name) {
 ##' @export
 ggplot_add.GCcontent <- function(object, plot, object_name) {
     msaData <- plot$layers[[1]]$data
+    show.legend <- object$show.legend
     GC_tidyData <- msa2tidy(msaData)
 
-    ly <- geom_GC1(GC_tidyData)
+    ly <- geom_GC1(GC_tidyData, show.legend = show.legend )
 
     ggplot_add(ly, plot, object_name)
 }
@@ -44,8 +46,8 @@ ggplot_add.GCcontent <- function(object, plot, object_name) {
 ##' @importFrom ggplot2 facet_wrap
 ##' @importFrom ggplot2 ggplot_add
 ##' @importFrom ggplot2 scale_x_continuous
-##' @importFrom ggplot2 geom_text
 ##' @importFrom ggplot2 coord_cartesian
+##' @importFrom ggplot2 geom_blank
 ##' @method ggplot_add facet_msa
 ##' @export
 ggplot_add.facet_msa <- function(object, plot, object_name){
@@ -53,33 +55,33 @@ ggplot_add.facet_msa <- function(object, plot, object_name){
     field <- object$field
     facetData <- facet_data(msaData, field)
 
-    # facetData$x_text <- NA
-    # start <- min(facetData$position)
-    # end <- max(facetData$position)
-    # x_label <- pretty(start:end)
-    # x_label[1] <- start
-    #
-    # #x_label[length(x_label)] <- end
-    #
-    # facetData[facetData$position %in% x_label,]$x_text <-
-    #     facetData[facetData$position %in% x_label,]$position
-    #
-    # facetData[!is.na(facetData$x_text),]$x_text <-
-    #     facetData[!is.na(facetData$x_text),]$x_text + field * facetData[!is.na(facetData$x_text),]$facet
-
+    ##update data
     plot$layers[[1]]$data <- facetData #ly_bg
-
-    if (length(plot$layers) > 1)
+    if (length(plot$layers) > 1){
         plot$layers[[2]]$data <- facetData #ly_label
+    }
 
-    # plot +
-    #   geom_text(aes_(x = ~position, y = ~-1, label = ~x_text), data = facetData, na.rm = T, color = "#6d6d6d", size = 3.2) +
-    #   facet_wrap(~facetData$facet, ncol = 1) + scale_x_continuous(breaks = NULL)
-    #ggplot_add(msa_facet, plot, object_name)
+    region <- diff(range(facetData$position))
     xl_scale <- facet_scale(facetData, field)
-    plot + facet_wrap(~facetData$facet, ncol = 1, scales = "free") +
-        scale_x_continuous(expand = c(0,0), breaks = xl_scale, labels = xl_scale) +
+
+    if (region %% field == 0) {
+        plot + facet_wrap(.~facet, ncol = 1, scales = "free_x") +
+            scale_x_continuous(expand = c(0,0), breaks = xl_scale, labels = xl_scale) +
             coord_cartesian()
+    }else {
+        max_pos <- facetData$position %>% max
+        min_pos <- facetData$position %>% min
+        max_facet <- facetData$facet %>% max
+        minpos_maxfacet <- facetData[facetData$facet == max_facet,"position"] %>% min
+        expand_pos <-  (region %/% field + 1) * field + min_pos
+
+        dummy <- data.frame(x = c(minpos_maxfacet, expand_pos), facet = max_facet)
+        plot +
+            facet_wrap(.~facet, ncol = 1, scales = "free_x") +
+            geom_blank(aes_(x = ~x), dummy, inherit.aes = FALSE) +
+            scale_x_continuous(expand = c(0,0), breaks = xl_scale, labels = xl_scale) +
+            coord_cartesian()
+    }
 
 }
 
@@ -95,4 +97,25 @@ ggplot_add.msaBar <- function(object, plot, object_name){
     p_bar <- ggplot() + ly_bar(bar_tidyData) + bar_theme(bar_tidyData)
     plot <- plot + coord_cartesian()
     p_bar %>% insert_top(plot, height = 3)
+}
+
+
+##' @method ggplot_add nucleotideeHelix
+##' @export
+ggplot_add.nucleotideeHelix <- function(object, plot, object_name){
+    msa_data <- plot$layers[[1]]$data
+    tidy_data <- msa2tidy(msa_data)
+    seq_numbers <- levels(tidy_data$name) %>% length
+
+    helix_data <- object$helix_data
+    color_by <- object$color_by
+    overlap <- object$overlap
+
+    if(is.data.frame(helix_data)) {
+        helix_tidy <- tidy_helix(helix_data, color_by = color_by)
+    }else {
+        helix_tidy <- tidy_list_helix(helix_data, color_by = color_by)
+    }
+    ly <- layer_helix(helix_data = helix_tidy, overlap = overlap, seq_numbers = seq_numbers)
+    ggplot_add(ly, plot, object_name)
 }
